@@ -31,7 +31,7 @@ AliasesToExport = @()
 CmdletsToExport = @()
 
 # HelpInfo URI of this module
-HelpInfoURI = 'https://aka.ms/winsvr-2025-pshelp'
+HelpInfoURI = 'https://learn.microsoft.com/windows/win32/updateorchestrator/#expediting-oem-apps-via-universal-orchestrator-framework'
 
 CompatiblePSEditions = @('Desktop')
 }
