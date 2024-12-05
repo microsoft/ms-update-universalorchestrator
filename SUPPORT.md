@@ -1,25 +1,19 @@
-# TODO: The maintainer of this repo has not yet edited this file
-
-**REPO OWNER**: Do you want Customer Service & Support (CSS) support for this product/project?
-
-- **No CSS support:** Fill out this template with information about how to file issues and get help.
-- **Yes CSS support:** Fill out an intake form at [aka.ms/onboardsupport](https://aka.ms/onboardsupport). CSS will work with/help you to determine next steps.
-- **Not sure?** Fill out an intake as though the answer were "Yes". CSS will help you decide.
-
-*Then remove this first heading from this SUPPORT.MD file before publishing your repo.*
-
 # Support
+## How to file issues and get help
 
-## How to file issues and get help  
+[GitHub issues](https://github.com/microsoft/ms-update-universalorchestrator/issues) should be used for bugs. Please follow the following guidelines when reporting issues:
+1. Create a single issue per bug. Please do not enumerate multiple bugs in a single issue.
+2. Unless there exists an identical issue, do not add your issue as a comment to an existing one which which may appear to be similar.
+3. Please provide as much information possible when creating an issue. Please include the following with each issue:
+    - Operating System Version (ex: 10.22621.0)
+    - Reproducible steps (1... 2... 3...) that resulted in the bug.
+    - What you expected to see.
+    - What you actually saw.
+    - Images, animations, or a link to a video showing the bug occuring.
+4. Once the issue has been submitted, the report will go into the `issue tracking` workflow.
 
-This project uses GitHub Issues to track bugs and feature requests. Please search the existing 
-issues before filing new issues to avoid duplicates.  For new issues, file your bug or 
-feature request as a new Issue.
+> **_NOTE:_**  **Github Issues will not be utilized for 'how-to' questions on the Universal Orchestrator framework or the cmdlets.**
 
-For help and questions about using this project, please **REPO MAINTAINER: INSERT INSTRUCTIONS HERE 
-FOR HOW TO ENGAGE REPO OWNERS OR COMMUNITY FOR HELP. COULD BE A STACK OVERFLOW TAG OR OTHER
-CHANNEL. WHERE WILL YOU HELP PEOPLE?**.
-
-## Microsoft Support Policy  
+## Microsoft Support Policy
 
 Support for this **PROJECT or PRODUCT** is limited to the resources listed above.
