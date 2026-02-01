@@ -65,6 +65,35 @@ function Test-UpdaterRegistration {
         throw $_.Exception.Message
     }
 
+    $supportedProperties = @(
+        "PFN",
+        "OEMName",
+        "UpdaterName",
+        "RegistrationVersion",
+        "Source",
+        "Endpoint",
+        "ProductId",
+        "Scenario",
+        "AllowedInOobe",
+        "MaxRetryCount",
+        "TimeoutDurationInMinutes",
+        "IncludedRegions",
+        "ExcludedRegions",
+        "IncludedEditions",
+        "ExcludedEditions",
+        "Architecture",
+        "MinimumAllowedBuildVersion",
+        "HonorDeprovisioning",
+        "SkipIfPresent",
+        "Priority"
+    )
+
+    foreach ($property in $supportedProperties) {
+        if ($updaterMetadata.PSObject.Properties[$property] -and $updaterMetadata.PSObject.Properties[$property].Name -cne $property) {
+            throw "The property '$($updaterMetadata.PSObject.Properties[$property].Name)' does not match the expected case-sensitive property name '$property'."
+        }
+    }
+
     if (-not ($updaterMetadata.PSObject.Properties["OEMName"] -and
             $updaterMetadata.PSObject.Properties["UpdaterName"] -and
             $updaterMetadata.PSObject.Properties["PFN"] -and
@@ -81,27 +110,35 @@ function Test-UpdaterRegistration {
         throw "OEMName, UpdaterName, and PFN need to be Strings. RegistrationVersion needs to be an Integer."
     }
 
+    if ($updaterMetadata.OEMName -notmatch '^[a-zA-Z0-9_-]+$') {
+        throw "OEMName can only contain alphanumeric characters, underscores, and hyphens."
+    }
+
+    if ($updaterMetadata.UpdaterName -notmatch '^[a-zA-Z0-9_-]+$') {
+        throw "UpdaterName can only contain alphanumeric characters, underscores, and hyphens."
+    }
+
     if ($updaterMetadata.RegistrationVersion -lt 1) {
         throw "RegistrationVersion must be greater than 0."
     }
 
-    if ($updaterMetadata.Scenario -notin @("Update", "Acquisition", "StubAcquisition")) {
-        throw "Scenario can only be 'Update', 'Acquisition', or 'StubAcquisition'."
+    if ($updaterMetadata.Scenario -cnotin @("Update", "Acquisition", "StubAcquisition")) {
+        throw "Scenario can only be 'Update', 'Acquisition', or 'StubAcquisition'. Ensure the casing is correct."
     }
 
-    if ($updaterMetadata.Source -notin @("CustomURL", "Store")) {
-        throw "Source can only be 'CustomURL' or 'Store'."
+    if ($updaterMetadata.Source -cnotin @("CustomURL", "Store")) {
+        throw "Source can only be 'CustomURL' or 'Store'. Ensure the casing is correct."
     }
 
-    if ($updaterMetadata.Source -eq "CustomURL" -and -not $updaterMetadata.Endpoint) {
+    if ($updaterMetadata.Source -ceq "CustomURL" -and -not $updaterMetadata.Endpoint) {
         throw "Endpoint needs to be specified for CustomURL source."
     }
 
-    if ($updaterMetadata.Source -eq "CustomURL" -and $updaterMetadata.Endpoint -notmatch '^https://') {
-        throw "CustomURL must be an SSL URI that begins with 'https'."
+    if ($updaterMetadata.Source -ceq "CustomURL" -and $updaterMetadata.Endpoint -cnotmatch '^https://') {
+        throw "CustomURL must be an SSL URI that begins with 'https://'."
     }
 
-    if ($updaterMetadata.Source -eq "Store" -and -not $updaterMetadata.ProductId) {
+    if ($updaterMetadata.Source -ceq "Store" -and -not $updaterMetadata.ProductId) {
         throw "Product ID needs to be specified for Store source."
     }
 
@@ -164,8 +201,8 @@ function Test-UpdaterRegistration {
     }
 
     if ($updaterMetadata.PSObject.Properties["Architecture"]) {
-        if ($updaterMetadata.Architecture -notin @("amd64", "arm64")) {
-            throw "Architecture can only be 'amd64' or 'arm64'."
+        if ($updaterMetadata.Architecture -cnotin @("amd64", "arm64")) {
+            throw "Architecture can only be 'amd64' or 'arm64'. Ensure the casing is correct."
         }
     }
 
@@ -181,7 +218,7 @@ function Test-UpdaterRegistration {
             throw "HonorDeprovisioning needs to be a Boolean."
         }
 
-        if ($updaterMetadata.HonorDeprovisioning -eq $true -and $updaterMetadata.Scenario -eq "Update") {
+        if ($updaterMetadata.HonorDeprovisioning -eq $true -and $updaterMetadata.Scenario -ceq "Update") {
             throw "HonorDeprovisioning can only be specified for the 'Acquisition' or 'StubAcquisition' scenario."
         }
     }
@@ -248,8 +285,8 @@ function Add-UpdaterRegistration {
 
     if (Test-UpdaterRegistration -UpdaterJsonPath $UpdaterJsonPath) {
         $updateMetadataJson = Get-Content -Path $UpdaterJsonPath -Raw | ConvertFrom-Json
-        $oemName = $updateMetadataJson.OEMName
-        $updaterName = $updateMetadataJson.UpdaterName
+        $oemName = $updateMetadataJson.OEMName.ToLower()
+        $updaterName = $updateMetadataJson.UpdaterName.ToLower()
 
         $existingRegistration = Get-ChildItem -Path $manifestedUpdaterPath -Directory | Where-Object { $_.Name -eq "${oemName}_${updaterName}" }
         if ($existingRegistration) {
