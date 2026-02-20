@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation.  All rights reserved.
 #
 # Version: 1.0.0.0
-# Revision 2024.11.20
+# Revision 2026.02.12
 #
 
 # Ensure that the command is run with Administrator privileges
@@ -79,6 +79,14 @@ function Test-UpdaterRegistration {
             $updaterMetadata.PFN -is [String] -and
             $updaterMetadata.RegistrationVersion -is [Int32] -or $updaterMetadata.RegistrationVersion -is [Int64])) {
         throw "OEMName, UpdaterName, and PFN need to be Strings. RegistrationVersion needs to be an Integer."
+    }
+
+    if ($updaterMetadata.OEMName -notmatch '^[a-zA-Z0-9_-]+$') {
+        throw "OEMName can only contain alphanumeric characters, underscores, and hyphens."
+    }
+
+    if ($updaterMetadata.UpdaterName -notmatch '^[a-zA-Z0-9_-]+$') {
+        throw "UpdaterName can only contain alphanumeric characters, underscores, and hyphens."
     }
 
     if ($updaterMetadata.RegistrationVersion -lt 1) {
